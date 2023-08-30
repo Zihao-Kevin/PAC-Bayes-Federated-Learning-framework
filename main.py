@@ -1,6 +1,3 @@
-
-from __future__ import absolute_import, division, print_function
-
 import argparse
 import timeit, os
 # sys.path.append(os.path.abspath(os.path.join('./FedTrain')))
@@ -59,7 +56,7 @@ parser.add_argument('--save_path', type=str,
                     default='./cks/', help='path to save the checkpoint')
 
 parser.add_argument('--device', type=str,
-                    default='cuda', help='[cuda | cpu]')
+                    default='cuda:3', help='[cuda | cpu]')
 
 # ---------------------- FL Parameters ----------------------#
 
@@ -81,7 +78,7 @@ parser.add_argument('--local_steps', type=int,
 
 parser.add_argument('--global_steps', type=int,
                     help='For infinite tasks case, number of steps for training per meta-batch of tasks',
-                    default=300)  #
+                    default=100)  #
 
 parser.add_argument('--data-transform', type=str, help="Data transformation:  'None' / 'Permute_Pixels' / 'Permute_Labels'/ Shuffled_Pixels ",
                     default='Permute_Labels')
@@ -140,8 +137,8 @@ prm.optim_func, prm.optim_args = optim.Adam,  {'lr': prm.lr} #'weight_decay': 1e
 prm.lr_schedule = {}  # No decay
 
 # MPB alg params:
-prm.delta = 0.95  #  maximal probability that the bound does not hold
-prm.C = 1
+prm.delta = 0.05  #  maximal probability that the bound does not hold
+prm.C = 2
 prm.n_samples = 0.
 empirical_risk_list = []
 population_risk_list = []
@@ -208,8 +205,10 @@ if prm.mode == 'FederatedTrain':
             best_acc, best_tacc, best_changed, empirical_risk, population_risk, train_acc, val_acc = evalandprint(
                 prm, fed_training, train_loaders, val_loaders, test_loaders, save_path, best_acc, best_tacc, g_iter, best_changed
             )
-
-            print(f"empirical_risk = {empirical_risk}, avg_empirical_loss = {avg_empirical_loss}")
+            # update the loss bound
+            if empirical_risk > prm.C:
+                prm.C = empirical_risk
+            print(f"population_risk - empirical_risk = {population_risk - empirical_risk}, avg_total_comp = {avg_total_comp.item()}")
             empirical_risk_list.append(empirical_risk)
             population_risk_list.append(population_risk)
             train_acc_list.append(train_acc)
