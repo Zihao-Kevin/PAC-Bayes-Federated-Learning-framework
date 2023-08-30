@@ -22,7 +22,7 @@ def my_plot(dir):
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
     plt.title('{} Parameters'.format('generalization err v.s. comlexity'), fontsize=16)
-    plt.plot(x, population_risk_list - empirical_risk_list, 'darkturquoise', label='empirical_risk_list',linestyle='--', linewidth=2)
+    plt.plot(x, population_risk_list - empirical_risk_list, 'darkturquoise', label='generalization err', linestyle='--', linewidth=2)
     plt.plot(x, complexity_list, 'blue', label='complexity_list', linewidth=2)
     plt.legend(fontsize=14, loc='best')
 
@@ -35,5 +35,6 @@ def my_plot(dir):
     plt.legend(fontsize=14, loc='best')
 
 if __name__ == '__main__':
-    dir = '../saved/medmnist_custom_fixed_4clients_2023-08-29-13:47:52/'
+    dir = '../saved/cifar10_non_iid_dirichlet_0.1_trainable_ConvNet4_10clients_seed:1_2023-08-30-11:56:09/'
+    my_plot(dir)
     plt.show()

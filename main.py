@@ -59,7 +59,7 @@ parser.add_argument('--save_path', type=str,
                     default='./cks/', help='path to save the checkpoint')
 
 parser.add_argument('--device', type=str,
-                    default='cuda:3', help='[cuda | cpu]')
+                    default='cuda', help='[cuda | cpu]')
 
 # ---------------------- FL Parameters ----------------------#
 
