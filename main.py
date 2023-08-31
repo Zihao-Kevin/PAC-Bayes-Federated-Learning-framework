@@ -41,7 +41,7 @@ parser.add_argument('--n_test_tasks', type=int,
                     default=10)
 
 parser.add_argument('--datapercent', type=float,
-                    default=0.7, help='data percent to use')
+                    default=0.4, help='data percent to use')
 
 parser.add_argument('--dataset', type=str, default='cifar10',
                     help='[vlcs | pacs | officehome | pamap | covid | medmnist | cifar10]')
@@ -78,7 +78,7 @@ parser.add_argument('--local_steps', type=int,
 
 parser.add_argument('--global_steps', type=int,
                     help='For infinite tasks case, number of steps for training per meta-batch of tasks',
-                    default=100)  #
+                    default=400)  #
 
 parser.add_argument('--data-transform', type=str, help="Data transformation:  'None' / 'Permute_Pixels' / 'Permute_Labels'/ Shuffled_Pixels ",
                     default='Permute_Labels')
@@ -94,10 +94,10 @@ parser.add_argument('--loss-type', type=str, help="Loss function",
 
 parser.add_argument('--prior_type', type=str,
                     help="fixed prior or trainable prior",
-                    default='fixed')
+                    default='trainable')
 
 parser.add_argument('--lr', type=float, help='initial learning rate',
-                    default=1e-2)
+                    default=1e-3)
 
 parser.add_argument('--batch_size', type=int, help='Maximal number of tasks in each meta-batch',
                     default=128)
@@ -138,7 +138,10 @@ prm.lr_schedule = {}  # No decay
 
 # MPB alg params:
 prm.delta = 0.05  #  maximal probability that the bound does not hold
-prm.C = 2
+if prm.dataset == 'medmnist':
+    prm.C = 2.5 * prm.n_train_clients
+elif prm.dataset == 'cifar10':
+    prm.C = 4 * prm.n_train_clients
 prm.n_samples = 0.
 empirical_risk_list = []
 population_risk_list = []
@@ -190,25 +193,19 @@ if prm.mode == 'FederatedTrain':
                     client_empirical_loss, client_complexity, correct_count, sample_count = \
                         fed_training.client_train(client_idx, train_loaders[client_idx], g_iter)
 
-                    sum_empirical_loss += client_empirical_loss * prm.partition_ratios[client_idx]
-                    sum_total_comp += client_complexity
-                sum_total_comp += fed_training.additional_comp_term
+                sum_total_comp += fed_training.epoch_comp_term
 
-            avg_empirical_loss = sum_empirical_loss / prm.local_steps
             avg_total_comp = sum_total_comp / prm.local_steps
-            total_objective = avg_empirical_loss + avg_total_comp
 
-            complexity_list.append(avg_total_comp.item())
+            complexity_list.append(avg_total_comp)
             # server aggregation
             fed_training.server_aggre()
 
             best_acc, best_tacc, best_changed, empirical_risk, population_risk, train_acc, val_acc = evalandprint(
                 prm, fed_training, train_loaders, val_loaders, test_loaders, save_path, best_acc, best_tacc, g_iter, best_changed
             )
-            # update the loss bound
-            if empirical_risk > prm.C:
-                prm.C = empirical_risk
-            print(f"population_risk - empirical_risk = {population_risk - empirical_risk}, avg_total_comp = {avg_total_comp.item()}")
+            print(f"population_risk - empirical_risk = {population_risk - empirical_risk}, avg_total_comp = {avg_total_comp}")
+            print(f"best_acc = {np.mean(best_acc)}, best_tacc = {np.mean(best_tacc)}")
             empirical_risk_list.append(empirical_risk)
             population_risk_list.append(population_risk)
             train_acc_list.append(train_acc)

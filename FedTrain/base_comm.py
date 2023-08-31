@@ -1,8 +1,6 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License.
-
 import torch
 import copy
+
 
 def communication(prm, server_post_model, client_post_models, client_weights):
     device = prm.device

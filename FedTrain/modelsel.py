@@ -1,6 +1,7 @@
 import copy
 from Models.stochastic_models import get_model
 
+
 def modelsel(prm, device):
     # if prm.dataset in ['vlcs', 'pacs', 'off_home', 'off-cal', 'covid']:
     #     server_model = AlexNet(num_classes=prm.num_classes).to(device)

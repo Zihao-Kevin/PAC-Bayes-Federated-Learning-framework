@@ -12,7 +12,8 @@ from .Fed_Utils.common import count_correct
 from .Fed_Utils import Bayes_utils
 import copy
 
-def train(prm, prior_model, post_model, client_weight, data_loader, optimizer, loss_criterion, llambda, device):
+
+def train(prm, prior_model, post_model, client_weight, data_loader, optimizer, scheduler, loss_criterion, llambda, device):
 
     post_model.train()
     if prm.prior_type == 'fixed':
@@ -57,6 +58,7 @@ def train(prm, prior_model, post_model, client_weight, data_loader, optimizer, l
     total_local_objective.backward()
     # torch.nn.utils.clip_grad_norm(parameters, 0.25)
     optimizer.step()
+
 
     return client_empirical_loss, client_complexity, correct_count, sample_count
 

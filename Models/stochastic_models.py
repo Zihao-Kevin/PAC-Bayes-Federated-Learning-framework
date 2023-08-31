@@ -163,9 +163,9 @@ class ConvNet3(general_model):
         input_shape = task_info['input_shape']
         color_channels = input_shape[0]
         n_classes = task_info['n_classes']
-        n_filt1 = 10
-        n_filt2 = 20
-        n_hidden_fc1 = 50
+        n_filt1 = 40
+        n_filt2 = 40
+        n_hidden_fc1 = 100
         self.conv1 = conv2d_layer(color_channels, n_filt1, kernel_size=5)
         self.conv2 = conv2d_layer(n_filt1, n_filt2, kernel_size=5)
         conv_feat_size = get_size_of_conv_output(input_shape, self._forward_features)

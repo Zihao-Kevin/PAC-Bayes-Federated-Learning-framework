@@ -66,7 +66,7 @@ class DataPartitioner(object):
             indices = data.indices
 
         self.partition_indices(indices)
-        prm.n_samples = len(indices)
+        prm.n_samples = len(indices) / prm.n_train_clients
 
     def partition_indices(self, indices):
         indices = self._create_indices(indices)
@@ -281,7 +281,7 @@ def record_class_distribution(partitions, targets):
 
 def define_val_dataset(prm, train_dataset):
     partition_sizes = [
-        0.8, 0.1, 0.1
+        0.4, 0.4, 0.2
     ]
     data_partitioner = DataPartitioner(
         prm,
@@ -328,8 +328,8 @@ def getdataloader(prm, dataall, root_dir='./split/'):
     clienttest_list = []
     for i in range(prm.n_train_clients):
         clienttrain_list.append(data_part.use(3 * i))
-        clienttest_list.append(data_part.use(3 * i + 1))
-        clientvalid_list.append(data_part.use(3 * i + 2))
+        clientvalid_list.append(data_part.use(3 * i + 1))
+        clienttest_list.append(data_part.use(3 * i + 2))
     return clienttrain_list, clientvalid_list, clienttest_list
 
 
