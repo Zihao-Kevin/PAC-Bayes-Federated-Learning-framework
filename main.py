@@ -67,7 +67,7 @@ parser.add_argument('--non_iid_alpha', type=float,
                         default=0.5, help='data split for label shift')
 
 parser.add_argument('--partition_data', type=str,
-                        default='non_iid_dirichlet', help='partition data way, non_iid_dirichlet or custom')
+                        default='evenly', help='partition data way, non_iid_dirichlet or custom or evenly')
 
 parser.add_argument('--partition_ratios', type=list, help='Data partition ratio, [0.1, 0.2, 0.3, 0.4]',
                     default=[0.05, 0.05, 0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.2, 0.2])
@@ -122,6 +122,8 @@ elif prm.n_train_clients == 2:
 elif prm.n_train_clients == 4:
     prm.partition_ratios = [0.15, 0.2, 0.25, 0.4]
 prm.partition_data_origin = prm.partition_data
+if prm.partition_data == 'evenly':
+    prm.partition_ratios = [(1 / prm.n_train_clients)] * 10
 # Weights initialization (for Bayesian net):
 prm.log_var_init = {'mean': -10, 'std': 0.1} # The initial value for the log-var parameter (rho) of each weight
 
