@@ -1,6 +1,0 @@
-Log file created at 2023-08-31-19:37:14
-Run script: main.py
-Parameters:
-Namespace(run_name='medmnist_non_iid_dirichlet_0.1_trainable_ConvNet3_10clients_seed:1_2023-08-31-19:37:14', seed=1, mode='FederatedTrain', load_model_path='', n_test_tasks=10, datapercent=0.4, dataset='medmnist', model_name='ConvNet3', root_dir='/home/zihao/PycharmProjects/PAC-Bayes-Federated-Learning-framework/data/', save_path='./cks/', device='cuda:1', n_train_clients=10, non_iid_alpha=0.1, partition_data='non_iid_dirichlet', partition_ratios=[0.05, 0.05, 0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.2, 0.2], local_steps=20, global_steps=400, data_transform='Permute_Labels', complexity_type='PAC_Bayes_FL', loss_type='CrossEntropy', prior_type='trainable', lr=0.001, batch_size=128, data_path='/home/zihao/PycharmProjects/ML_data_sets', random_state=RandomState(MT19937) at 0x7FDA25FF5A40, result_dir='saved/medmnist_non_iid_dirichlet_0.1_trainable_ConvNet3_10clients_seed:1_2023-08-31-19:37:14')
---------------------------------------------------
---- Generating 10 training-tasks
