@@ -12,7 +12,7 @@ from Models.stochastic_models import get_model
 from FedTrain.Fed_Utils.common import load_model_state, create_result_dir, set_random_seed, write_to_log
 
 from FedTrain.prepare_data import get_data
-from FedTrain.fedavg import fedavg
+from FedTrain.fedpac import fedpac
 from FedTrain.evalandprint import evalandprint
 from FedTrain.Fed_Utils.common import get_data_path, img_param_init
 torch.backends.cudnn.benchmark = True  # For speed improvement with models with fixed-length inputs
@@ -119,11 +119,14 @@ if prm.n_train_clients == 10:
     prm.partition_ratios = [0.05, 0.05, 0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.2, 0.2]
 elif prm.n_train_clients == 2:
     prm.partition_ratios = [0.2, 0.8]
-elif prm.n_train_clients == 4:
-    prm.partition_ratios = [0.15, 0.2, 0.25, 0.4]
+elif prm.n_train_clients == 20:
+    prm.partition_ratios = [0.025] * 8 + [0.05] * 8 + [0.1] * 4
+elif prm.n_train_clients == 50:
+    prm.partition_ratios = [0.01] * 20 + [0.02] * 20 + [0.04] * 10
+
 prm.partition_data_origin = prm.partition_data
 if prm.partition_data == 'evenly':
-    prm.partition_ratios = [(1 / prm.n_train_clients)] * 10
+    prm.partition_ratios = [(1 / prm.n_train_clients)] * prm.n_train_clients
 # Weights initialization (for Bayesian net):
 prm.log_var_init = {'mean': -10, 'std': 0.1} # The initial value for the log-var parameter (rho) of each weight
 
@@ -183,7 +186,7 @@ if prm.mode == 'FederatedTrain':
             prm.partition_ratios = [len(train_loaders[i].dataset.indices) for i in range(n_train_clients)]
             prm.partition_ratios /= np.sum(prm.partition_ratios)
 
-        fed_training = fedavg(prm)
+        fed_training = fedpac(prm)
 
         # global training
         for g_iter in range(prm.global_steps):

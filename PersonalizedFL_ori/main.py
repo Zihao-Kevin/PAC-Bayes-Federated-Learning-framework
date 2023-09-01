@@ -17,7 +17,7 @@ if __name__ == '__main__':
     parser.add_argument('--alg', type=str, default='fedavg',
                         help='Algorithm to choose: [base | fedavg | fedbn | fedprox | fedap | metafed ]')
     parser.add_argument('--datapercent', type=float,
-                        default=1e-1, help='data percent to use')
+                        default=1e-4, help='data percent to use')
     parser.add_argument('--dataset', type=str, default='medmnist',
                         help='[vlcs | pacs | officehome | pamap | covid | medmnist]')
     parser.add_argument('--root_dir', type=str,
